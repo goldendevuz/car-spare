@@ -1,0 +1,28 @@
+{
+  "129748761": {
+    "shop_id": 1,
+    "seller_token": "540f6d5b-efbc-4c68-817b-6695cbc0e2de",
+    "last_city_id": 1
+  },
+  "6403028578": {
+    "last_city_id": 1
+  },
+  "1166072837": {
+    "shop_id": 2,
+    "seller_token": "d2e0a6b8-771c-46e6-8246-e4d54f3fb091"
+  },
+  "2108414301": {
+    "shop_id": 3,
+    "seller_token": "1e3bb9d0-6534-46cb-b7c7-7eec60e1ab09"
+  },
+  "6905123348": {
+    "shop_id": 4,
+    "seller_token": "3bd738e7-1df1-4ea9-b7c5-91531cfd40d5",
+    "last_city_id": 1
+  },
+  "1922901774": {
+    "shop_id": 5,
+    "seller_token": "e6ed495f-9799-433d-bbf5-aa710ce4874b",
+    "last_city_id": 1
+  }
+}
