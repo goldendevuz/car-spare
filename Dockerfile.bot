@@ -9,6 +9,5 @@ RUN pip install --upgrade pip && pip install -r bot/requirements.txt && pip inst
 COPY . .
 
 # Set PYTHONPATH so Python finds app/ and backend/
-ENV PYTHONPATH=/usr/src
-
+ENV PYTHONPATH=/usr/src/bot:/usr/src
 CMD ["python", "-m", "app.main"]

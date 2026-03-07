@@ -7,6 +7,11 @@ services:
       - .env
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $POSTGRES_USER -d $POSTGRES_DB"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   backend:
     build:
@@ -15,7 +20,8 @@ services:
     env_file:
       - .env
     depends_on:
-      - db
+      db:
+        condition: service_healthy   # ← wait until postgres is actually ready
     ports:
       - "8000:8000"
 
@@ -26,8 +32,10 @@ services:
     env_file:
       - .env
     depends_on:
-      - db
-      - backend
-
+      db:
+        condition: service_healthy
+      backend:
+        condition: service_started
+        
 volumes:
   postgres_data:
