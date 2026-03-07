@@ -1,0 +1,12 @@
+FROM python:3.12-slim
+
+WORKDIR /usr/src
+
+COPY backend/requirements.txt backend/requirements.txt
+RUN pip install --upgrade pip && pip install -r backend/requirements.txt
+
+COPY . .
+
+ENV PYTHONPATH=/usr/src
+
+CMD ["python", "-m", "backend.manage", "runserver", "0.0.0.0:8000"]

@@ -1,0 +1,14 @@
+FROM python:3.12-slim
+
+WORKDIR /usr/src
+
+COPY bot/requirements.txt bot/requirements.txt
+COPY backend/requirements.txt backend/requirements.txt
+RUN pip install --upgrade pip && pip install -r bot/requirements.txt && pip install -r backend/requirements.txt
+
+COPY . .
+
+# Set PYTHONPATH so Python finds app/ and backend/
+ENV PYTHONPATH=/usr/src
+
+CMD ["python", "-m", "app.main"]
