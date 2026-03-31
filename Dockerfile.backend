@@ -10,4 +10,4 @@ COPY . .
 ENV PYTHONPATH=/usr/src
 
 ENV PYTHONPATH=/usr/src/backend:/usr/src
-CMD ["python", "-m", "backend.manage", "runserver", "0.0.0.0:8000"]
+CMD ["python", "-m", "backend.manage", "runserver", "0.0.0.0:8001"]

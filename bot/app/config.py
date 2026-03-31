@@ -22,7 +22,7 @@ class Settings:
 
 settings = Settings(
     bot_token=os.getenv("BOT_TOKEN", ""),
-    api_base=os.getenv("API_BASE", "http://127.0.0.1:8000"),
+    api_base=os.getenv("API_BASE", "http://127.0.0.1:8001"),
     shop_create_path=os.getenv("SHOP_CREATE_PATH", "/shops/create/"),
     part_create_path=os.getenv("PART_CREATE_PATH", "/parts/create/"),
 )
