@@ -24,6 +24,9 @@ services:
         condition: service_healthy # ← wait until postgres is actually ready
     ports:
       - "8001:8001"
+    volumes:
+      - ./backend:/usr/src/backend
+      - ./staticfiles:/usr/src/staticfiles
 
   bot:
     build:

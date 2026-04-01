@@ -1,6 +1,5 @@
 FROM python:3.12-slim
 
-# Install make (and optionally build tools if needed)
 RUN apt-get update && apt-get install -y \
     make \
     gcc \
