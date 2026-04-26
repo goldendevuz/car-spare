@@ -25,7 +25,11 @@ SECRET_KEY = 'django-insecure-(svn4n&ggl42ava0igmfiscc1j)$cpt8!@6y$z^4g_@!06_9b1
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost:8001',
+    'http://94.131.85.116',
+]
 
 
 # Application definition
@@ -75,23 +79,23 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'zapchastop_db',
-        'USER': 'carspare',      # matches POSTGRES_USER
-        'PASSWORD': 'secret',    # matches POSTGRES_PASSWORD
-        'HOST': 'db',
-        'PORT': '5432',
-    }
-}
-
 # DATABASES = {
 #     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'zapchastop_db',
+#         'USER': 'carspare',      # matches POSTGRES_USER
+#         'PASSWORD': 'secret',    # matches POSTGRES_PASSWORD
+#         'HOST': 'db',
+#         'PORT': '5432',
 #     }
 # }
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
 
 
 # Password validation

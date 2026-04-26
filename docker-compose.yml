@@ -1,17 +1,17 @@
 services:
-  db:
-    image: postgres:17-alpine
-    ports:
-      - "5432:5432"
-    env_file:
-      - .env
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U $POSTGRES_USER -d $POSTGRES_DB"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
+  # db:
+  #   image: postgres:17-alpine
+  #   ports:
+  #     - "5432:5432"
+  #   env_file:
+  #     - .env
+  #   volumes:
+  #     - postgres_data:/var/lib/postgresql/data
+  #   healthcheck:
+  #     test: [ "CMD-SHELL", "pg_isready -U $POSTGRES_USER -d $POSTGRES_DB" ]
+  #     interval: 5s
+  #     timeout: 5s
+  #     retries: 5
 
   backend:
     build:
@@ -19,11 +19,14 @@ services:
       dockerfile: Dockerfile.backend
     env_file:
       - .env
-    depends_on:
-      db:
-        condition: service_healthy   # ← wait until postgres is actually ready
+    # depends_on:
+    #   db:
+    #     condition: service_healthy # ← wait until postgres is actually ready
     ports:
-      - "8000:8000"
+      - "8001:8001"
+    volumes:
+      - ./backend:/usr/src/backend
+      - ./staticfiles:/usr/src/staticfiles
 
   bot:
     build:
@@ -31,11 +34,11 @@ services:
       dockerfile: Dockerfile.bot
     env_file:
       - .env
-    depends_on:
-      db:
-        condition: service_healthy
-      backend:
-        condition: service_started
-        
-volumes:
-  postgres_data:
+    # depends_on:
+    #   db:
+    #     condition: service_healthy
+    #   backend:
+    #     condition: service_started
+
+# volumes:
+#   postgres_data:
