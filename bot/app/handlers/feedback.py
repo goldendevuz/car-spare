@@ -35,7 +35,7 @@ async def feedback_start(message: Message, state: FSMContext):
 @router.message(FeedbackStates.waiting_text, F.text)
 async def feedback_send(message: Message, state: FSMContext, api, bot: Bot):
     text = message.text.strip()
-    role = get_role(message.from_user.id)
+    role = "admin" if settings.is_admin(message.from_user.id) else get_role(message.from_user.id)
     city_id = get_last_city(message.from_user.id)  # bo'lsa bog'lab qo'yamiz
 
     try:
