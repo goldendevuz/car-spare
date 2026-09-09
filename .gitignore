@@ -219,3 +219,5 @@ __marimo__/
 
 # Runtime bot state (contains live seller tokens)
 bot/seller_tokens.json
+bot/data/*
+!bot/data/.gitkeep

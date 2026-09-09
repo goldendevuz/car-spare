@@ -3,7 +3,9 @@ from pathlib import Path
 from typing import Optional, Dict, Any
 
 BASE_DIR = Path(__file__).resolve().parents[2]  # bot/
-FILE_PATH = BASE_DIR / "seller_tokens.json"
+DATA_DIR = BASE_DIR / "data"
+DATA_DIR.mkdir(parents=True, exist_ok=True)
+FILE_PATH = DATA_DIR / "seller_tokens.json"
 
 
 def _load() -> Dict[str, Any]:

@@ -40,7 +40,7 @@ services:
       PART_CREATE_PATH: /parts/create/
       TG_ADMIN_IDS: ${TG_ADMIN_IDS}
     volumes:
-      - ./bot/seller_tokens.json:/bot/seller_tokens.json
+      - ./bot/data:/bot/data
 
 volumes:
   db_data:
