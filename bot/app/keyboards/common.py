@@ -31,6 +31,14 @@ def cancel_inline_kb(target: str) -> InlineKeyboardMarkup:
     return kb.as_markup()
 
 
+def skip_or_cancel_kb(skip_data: str, cancel_target: str) -> InlineKeyboardMarkup:
+    kb = InlineKeyboardBuilder()
+    kb.button(text="⏭ O‘tkazib yuborish", callback_data=skip_data)
+    kb.button(text="❌ Bekor qilish", callback_data=f"cancel:{cancel_target}")
+    kb.adjust(1)
+    return kb.as_markup()
+
+
 def phone_kb() -> ReplyKeyboardMarkup:
     return ReplyKeyboardMarkup(
         keyboard=[[KeyboardButton(text="📞 Telefon yuborish", request_contact=True)]],
