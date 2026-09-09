@@ -49,3 +49,37 @@ def location_kb() -> ReplyKeyboardMarkup:
 
 def remove_kb() -> ReplyKeyboardRemove:
     return ReplyKeyboardRemove()
+
+
+# ---------- Inline keyboards for products ----------
+def products_kb(page: int, total_pages: int, items: list[dict]) -> InlineKeyboardMarkup:
+    kb = InlineKeyboardBuilder()
+
+    for p in items:
+        title = f"{p['car_model']} — {p['name']}"
+        kb.button(text=title, callback_data=f"prod:item:{p['id']}")
+
+    kb.adjust(1)
+
+    if total_pages > 1:
+        nav = InlineKeyboardBuilder()
+        nav.button(text="⬅️ Orqaga", callback_data=f"prod:page:{max(page-1, 0)}")
+        nav.button(text=f"{page+1}/{total_pages}", callback_data="prod:noop")
+        nav.button(text="Keyingi ➡️", callback_data=f"prod:page:{min(page+1, total_pages-1)}")
+        nav.adjust(3)
+        kb.attach(nav)
+
+    back = InlineKeyboardBuilder()
+    back.button(text="⬅️ Bosh menyu", callback_data="nav:main")
+    kb.attach(back)
+
+    return kb.as_markup()
+
+
+def product_detail_kb(part_id: int) -> InlineKeyboardMarkup:
+    kb = InlineKeyboardBuilder()
+    kb.button(text="✏️ Tahrirlash", callback_data=f"prod:edit:{part_id}")
+    kb.button(text="🗑 O‘chirish", callback_data=f"prod:del:{part_id}")
+    kb.button(text="⬅️ Ro‘yxatga qaytish", callback_data="prod:back")
+    kb.adjust(1)
+    return kb.as_markup()
