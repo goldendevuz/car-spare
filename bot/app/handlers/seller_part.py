@@ -1,82 +1,43 @@
 from aiogram import Router, F
-from aiogram.types import Message
+from aiogram.types import Message, CallbackQuery
 from aiogram.fsm.context import FSMContext
 
 from app.states import SellerPartStates
-from app.keyboards.common import shop_menu, cancel_kb
+from app.keyboards.common import shop_menu, cancel_inline_kb
 from app.services.storage import get_seller
 
 router = Router()
 
-# Menyu tugmalari state ichida "model/nom" bo'lib ketmasligi uchun
-MENU_WORDS = {
-    "🏪 Mening do‘konim",
-    "📦 Tovarlarim",
-    "➕ Zapchast qo‘shish",
-    "🔎 Qidiruv",
-    "💬 Fikr bildiring",
-    "🌍 Hudud",
-    "⬅️ Bosh menyu",
-}
 
-
-# 1) Universal cancel/back (qaysi state bo'lishidan qat'i nazar ishlaydi)
-@router.message(F.text.in_(["⬅️ Ortga", "❌ Bekor qilish"]))
-async def cancel_any(message: Message, state: FSMContext):
-    await state.clear()
-    await message.answer("Do‘kon kabineti:", reply_markup=shop_menu())
-
-
-# 2) Zapchast qo'shishni boshlash
-@router.message(F.text == "➕ Zapchast qo‘shish")
-async def part_start(message: Message, state: FSMContext):
-    info = get_seller(message.from_user.id)
+@router.callback_query(F.data == "shop:add_part")
+async def part_start(cb: CallbackQuery, state: FSMContext):
+    info = get_seller(cb.from_user.id)
     if not info:
-        await message.answer("Avval 🏪 Mening do‘konim orqali do‘kon yarating.", reply_markup=shop_menu())
+        await cb.message.edit_text("Avval 🏪 Mening do‘konim orqali do‘kon yarating.", reply_markup=shop_menu())
+        await cb.answer()
         return
 
     await state.set_state(SellerPartStates.car_model)
-    await message.answer(
+    await cb.message.edit_text(
         "Mashina modelini yozing (masalan: Cobalt):",
-        reply_markup=cancel_kb()
+        reply_markup=cancel_inline_kb("part"),
     )
+    await cb.answer()
 
 
-# 3) Car model qabul qilish (GUARD bilan)
 @router.message(SellerPartStates.car_model, F.text)
 async def part_car_model(message: Message, state: FSMContext):
-    text = message.text.strip()
-
-    # GUARD: user menyu tugmalarini bosib yuborsa, qabul qilmaymiz
-    if text in MENU_WORDS:
-        await message.answer(
-            "Iltimos, mashina modelini yozing.\n"
-            "Yoki ⬅️ Ortga / ❌ Bekor qilish ni bosing.",
-            reply_markup=cancel_kb()
-        )
-        return
-
-    await state.update_data(car_model=text)
+    await state.update_data(car_model=message.text.strip())
     await state.set_state(SellerPartStates.part_name)
     await message.answer(
         "Zapchast nomini yozing (masalan: Old fara):",
-        reply_markup=cancel_kb()
+        reply_markup=cancel_inline_kb("part"),
     )
 
 
-# 4) Part name qabul qilish (GUARD bilan) va API ga yuborish
 @router.message(SellerPartStates.part_name, F.text)
 async def part_name(message: Message, state: FSMContext, api):
     text = message.text.strip()
-
-    # GUARD
-    if text in MENU_WORDS:
-        await message.answer(
-            "Iltimos, zapchast nomini yozing.\n"
-            "Yoki ⬅️ Ortga / ❌ Bekor qilish ni bosing.",
-            reply_markup=cancel_kb()
-        )
-        return
 
     info = get_seller(message.from_user.id)
     if not info:

@@ -26,12 +26,6 @@ async def notify_admins_feedback(bot: Bot, message: Message, role: str, text: st
             pass
 
 
-@router.message(F.text == "💬 Fikr bildiring")
-async def feedback_start(message: Message, state: FSMContext):
-    await state.set_state(FeedbackStates.waiting_text)
-    await message.answer("Fikringizni yozib yuboring (taklif/shikoyat):", reply_markup=main_menu())
-
-
 @router.message(FeedbackStates.waiting_text, F.text)
 async def feedback_send(message: Message, state: FSMContext, api, bot: Bot):
     text = message.text.strip()

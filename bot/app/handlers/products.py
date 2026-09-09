@@ -2,7 +2,7 @@ from aiogram import Router, F
 from aiogram.types import Message, CallbackQuery
 from aiogram.fsm.context import FSMContext
 
-from ..keyboards.common import products_kb, product_detail_kb, shop_menu
+from ..keyboards.common import products_kb, product_detail_kb, shop_menu, cancel_inline_kb
 from ..services.storage import get_seller
 from ..states import PartEditStates
 
@@ -62,22 +62,24 @@ async def render_products_page(
 
 
 # ---------- entry: "Tovarlarim" button ----------
-@router.message(F.text == "📦 Tovarlarim")
-async def my_products(message: Message, state: FSMContext, api):
-    info = get_seller(message.from_user.id)
+@router.callback_query(F.data == "shop:products")
+async def my_products(cb: CallbackQuery, state: FSMContext, api):
+    info = get_seller(cb.from_user.id)
     if not info:
-        await message.answer("Avval 🏪 Mening do‘konim orqali do‘kon yarating.", reply_markup=shop_menu())
+        await cb.message.edit_text("Avval 🏪 Mening do‘konim orqali do‘kon yarating.", reply_markup=shop_menu())
+        await cb.answer()
         return
 
     # sahifani 0 ga qo'yamiz
     await state.update_data(prod_page=0)
     await render_products_page(
-        target=message,
+        target=cb,
         api=api,
         shop_id=info["shop_id"],
         seller_token=info["seller_token"],
         page=0
     )
+    await cb.answer()
 
 
 # ---------- pagination callbacks ----------
@@ -168,7 +170,10 @@ async def edit_item(cb: CallbackQuery, state: FSMContext):
     await state.update_data(edit_part_id=part_id)
     await state.set_state(PartEditStates.waiting_new_name)
 
-    await cb.message.answer("✏️ Yangi nomini yuboring (masalan: Old fara):")
+    await cb.message.answer(
+        "✏️ Yangi nomini yuboring (masalan: Old fara):",
+        reply_markup=cancel_inline_kb("part"),
+    )
     await cb.answer()
 
 

@@ -5,7 +5,7 @@ from aiogram.fsm.context import FSMContext
 from ..states import SearchStates
 from ..keyboards.cities import cities_kb
 from ..keyboards.search import map_kb, search_page_kb
-from ..keyboards.common import main_menu
+from ..keyboards.common import cancel_inline_kb, main_menu
 from ..services.storage import set_last_city, get_last_city
 
 router = Router()
@@ -23,30 +23,6 @@ def format_shop_item(idx: int, r: dict) -> str:
     )
 
 
-@router.message(F.text == "🔎 Qidiruv")
-async def search_start(message: Message, state: FSMContext, api):
-    city_id = get_last_city(message.from_user.id)
-    if city_id:
-        await state.update_data(city_id=city_id, page=1, query=None)
-        await state.set_state(SearchStates.query)
-        await message.answer("<b>Zapchast nomini yozing</b> <i>(masalan: Cobalt old fara):</i>", reply_markup=main_menu(), parse_mode="HTML")
-        return
-
-    # Cities ro'yxati
-    try:
-        cities = api.list_cities()
-    except Exception as e:
-        await message.answer(f"❌ Shaharlar ro‘yxatini olishda xato: {e}", reply_markup=main_menu())
-        return
-
-    if not cities:
-        await message.answer("❌ Shaharlar yo‘q. Admin paneldan City qo‘shing.", reply_markup=main_menu())
-        return
-
-    await state.set_state(SearchStates.city)
-    await message.answer("<b>Qaysi hudud (shahar)da qidiramiz?</b>", reply_markup=cities_kb(cities), parse_mode="HTML")
-
-
 @router.callback_query(SearchStates.city, F.data.startswith("city:"))
 async def search_city_selected(cb: CallbackQuery, state: FSMContext):
     city_id = int(cb.data.split(":")[1])
@@ -54,7 +30,11 @@ async def search_city_selected(cb: CallbackQuery, state: FSMContext):
     set_last_city(cb.from_user.id, city_id)
 
     await state.set_state(SearchStates.query)
-    await cb.message.answer("<b>Zapchast nomini yozing</b> <i>(masalan: Cobalt old fara):</i>", reply_markup=main_menu(), parse_mode="HTML")
+    await cb.message.edit_text(
+        "<b>Zapchast nomini yozing</b> <i>(masalan: Cobalt old fara):</i>",
+        reply_markup=cancel_inline_kb("search"),
+        parse_mode="HTML",
+    )
     await cb.answer()
 
 
