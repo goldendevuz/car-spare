@@ -115,7 +115,7 @@ async def nav_city(cb: CallbackQuery, state: FSMContext, api):
 
 @router.callback_query(F.data.startswith("setcity:"))
 async def set_city(cb: CallbackQuery):
-    city_id = int(cb.data.split(":")[1])
+    city_id = cb.data.split(":", 1)[1]
     set_last_city(cb.from_user.id, city_id)
 
     city_name = None

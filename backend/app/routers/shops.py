@@ -1,3 +1,5 @@
+import uuid
+
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
@@ -29,7 +31,7 @@ def create_shop(payload: ShopCreate, db: Session = Depends(get_db)):
 
 
 @router.get("/shops/{shop_id}/", response_model=ShopPublicOut)
-def get_shop(shop_id: int, db: Session = Depends(get_db)):
+def get_shop(shop_id: uuid.UUID, db: Session = Depends(get_db)):
     shop = db.get(Shop, shop_id)
     if not shop:
         raise HTTPException(status_code=404, detail="Do'kon topilmadi")

@@ -73,7 +73,7 @@ async def shop_name(message: Message, state: FSMContext, api):
 
 @router.callback_query(SellerShopStates.city, F.data.startswith("city:"))
 async def shop_city_selected(cb: CallbackQuery, state: FSMContext):
-    city_id = int(cb.data.split(":")[1])
+    city_id = cb.data.split(":", 1)[1]
     await state.update_data(city=city_id)
 
     await state.set_state(SellerShopStates.location)

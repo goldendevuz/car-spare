@@ -1,3 +1,5 @@
+import uuid
+
 from fastapi import APIRouter, Depends, Header, HTTPException
 from sqlalchemy.orm import Session
 
@@ -14,7 +16,7 @@ def require_seller_token(x_seller_token: str | None = Header(default=None, alias
     return x_seller_token
 
 
-def get_shop_or_404(db: Session, shop_id: int) -> Shop:
+def get_shop_or_404(db: Session, shop_id: uuid.UUID) -> Shop:
     shop = db.get(Shop, shop_id)
     if not shop:
         raise HTTPException(status_code=404, detail="Shop topilmadi")
@@ -49,7 +51,7 @@ def create_part(
 
 
 @router.get("/parts/{part_id}/", response_model=PartOut)
-def get_part(part_id: int, db: Session = Depends(get_db)):
+def get_part(part_id: uuid.UUID, db: Session = Depends(get_db)):
     part = db.get(Part, part_id)
     if not part:
         raise HTTPException(status_code=404, detail="Part topilmadi")
@@ -58,7 +60,7 @@ def get_part(part_id: int, db: Session = Depends(get_db)):
 
 @router.patch("/parts/{part_id}/", response_model=PartOut)
 def patch_part(
-    part_id: int,
+    part_id: uuid.UUID,
     payload: PartUpdate,
     db: Session = Depends(get_db),
     token: str = Depends(require_seller_token),
@@ -81,7 +83,7 @@ def patch_part(
 
 @router.delete("/parts/{part_id}/")
 def delete_part(
-    part_id: int,
+    part_id: uuid.UUID,
     db: Session = Depends(get_db),
     token: str = Depends(require_seller_token),
 ):
@@ -97,7 +99,7 @@ def delete_part(
 
 @router.get("/shops/{shop_id}/parts/seller/", response_model=list[PartOut])
 def list_seller_parts(
-    shop_id: int,
+    shop_id: uuid.UUID,
     db: Session = Depends(get_db),
     token: str = Depends(require_seller_token),
 ):

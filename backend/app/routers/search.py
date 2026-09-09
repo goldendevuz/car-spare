@@ -1,3 +1,5 @@
+import uuid
+
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy import func, case
 from sqlalchemy.orm import Session
@@ -14,7 +16,7 @@ router = APIRouter()
 def search(
     db: Session = Depends(get_db),
     q: str = Query(...),
-    city_id: int = Query(...),
+    city_id: uuid.UUID = Query(...),
     telegram_id: int = Query(...),
     page: int = Query(1),
     page_size: int = Query(3),

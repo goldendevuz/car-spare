@@ -21,7 +21,7 @@ def _save(data: Dict[str, Any]) -> None:
     FILE_PATH.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
 
 
-def set_seller(telegram_id: int, shop_id: int, seller_token: str) -> None:
+def set_seller(telegram_id: int, shop_id: str, seller_token: str) -> None:
     data = _load()
     rec = data.get(str(telegram_id), {})
     rec.update({"shop_id": shop_id, "seller_token": seller_token})
@@ -43,7 +43,7 @@ def delete_seller(telegram_id: int) -> None:
     _save(data)
 
 
-def set_last_city(telegram_id: int, city_id: int) -> None:
+def set_last_city(telegram_id: int, city_id: str) -> None:
     data = _load()
     rec = data.get(str(telegram_id), {})
     rec["last_city_id"] = city_id
@@ -51,11 +51,10 @@ def set_last_city(telegram_id: int, city_id: int) -> None:
     _save(data)
 
 
-def get_last_city(telegram_id: int) -> Optional[int]:
+def get_last_city(telegram_id: int) -> Optional[str]:
     data = _load()
     rec = data.get(str(telegram_id)) or {}
-    val = rec.get("last_city_id")
-    return int(val) if val is not None else None
+    return rec.get("last_city_id")
 
 
 def get_role(telegram_id: int) -> str:

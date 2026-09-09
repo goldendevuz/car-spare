@@ -1,7 +1,7 @@
 import uuid
 
 from sqlalchemy import (
-    Column, Integer, BigInteger, String, Boolean, Float, ForeignKey, DateTime, Text
+    Column, BigInteger, Integer, String, Boolean, Float, ForeignKey, DateTime, Text
 )
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
@@ -10,10 +10,14 @@ from sqlalchemy.sql import func
 from .database import Base
 
 
+def uuid_pk():
+    return Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+
+
 class City(Base):
     __tablename__ = "cities"
 
-    id = Column(Integer, primary_key=True)
+    id = uuid_pk()
     name = Column(String(80), unique=True, nullable=False)
     is_active = Column(Boolean, default=True, nullable=False)
 
@@ -27,8 +31,8 @@ class City(Base):
 class District(Base):
     __tablename__ = "districts"
 
-    id = Column(Integer, primary_key=True)
-    city_id = Column(Integer, ForeignKey("cities.id"), nullable=False)
+    id = uuid_pk()
+    city_id = Column(UUID(as_uuid=True), ForeignKey("cities.id"), nullable=False)
     city = relationship("City", back_populates="districts")
 
     name = Column(String(120), nullable=False)
@@ -46,8 +50,8 @@ class Settlement(Base):
     TYPE_CITY = "shahar"
     TYPE_VILLAGE = "qishloq"
 
-    id = Column(Integer, primary_key=True)
-    district_id = Column(Integer, ForeignKey("districts.id"), nullable=False)
+    id = uuid_pk()
+    district_id = Column(UUID(as_uuid=True), ForeignKey("districts.id"), nullable=False)
     district = relationship("District", back_populates="settlements")
 
     name = Column(String(120), nullable=False)
@@ -64,11 +68,11 @@ class Shop(Base):
     STATUS_PENDING = "pending"
     STATUS_ACTIVE = "active"
 
-    id = Column(Integer, primary_key=True)
+    id = uuid_pk()
     name = Column(String(255), nullable=False)
     phone = Column(String(30), nullable=False)
 
-    city_id = Column(Integer, ForeignKey("cities.id"), nullable=False)
+    city_id = Column(UUID(as_uuid=True), ForeignKey("cities.id"), nullable=False)
     city = relationship("City", back_populates="shops")
 
     latitude = Column(Float, nullable=False)
@@ -88,8 +92,8 @@ class Shop(Base):
 class Part(Base):
     __tablename__ = "parts"
 
-    id = Column(Integer, primary_key=True)
-    shop_id = Column(Integer, ForeignKey("shops.id", ondelete="CASCADE"), nullable=False)
+    id = uuid_pk()
+    shop_id = Column(UUID(as_uuid=True), ForeignKey("shops.id", ondelete="CASCADE"), nullable=False)
     shop = relationship("Shop", back_populates="parts")
 
     car_model = Column(String(100), nullable=False)
@@ -105,9 +109,9 @@ class Part(Base):
 class SearchLog(Base):
     __tablename__ = "search_logs"
 
-    id = Column(Integer, primary_key=True)
+    id = uuid_pk()
     telegram_id = Column(BigInteger, nullable=False)
-    city_id = Column(Integer, ForeignKey("cities.id"), nullable=False)
+    city_id = Column(UUID(as_uuid=True), ForeignKey("cities.id"), nullable=False)
     city = relationship("City")
 
     query_text = Column(String(255), nullable=False)
@@ -120,15 +124,15 @@ class SearchLog(Base):
 class SearchResultLog(Base):
     __tablename__ = "search_result_logs"
 
-    id = Column(Integer, primary_key=True)
-    search_log_id = Column(Integer, ForeignKey("search_logs.id", ondelete="CASCADE"), nullable=False)
+    id = uuid_pk()
+    search_log_id = Column(UUID(as_uuid=True), ForeignKey("search_logs.id", ondelete="CASCADE"), nullable=False)
     search_log = relationship("SearchLog")
 
-    shop_id = Column(Integer, ForeignKey("shops.id"), nullable=False)
+    shop_id = Column(UUID(as_uuid=True), ForeignKey("shops.id"), nullable=False)
     shop = relationship("Shop")
 
     rank = Column(Integer, nullable=False)
-    best_part_id = Column(Integer, ForeignKey("parts.id", ondelete="SET NULL"), nullable=True)
+    best_part_id = Column(UUID(as_uuid=True), ForeignKey("parts.id", ondelete="SET NULL"), nullable=True)
     score = Column(Float, default=0.0)
 
 
@@ -142,11 +146,11 @@ class Feedback(Base):
     STATUS_REVIEWED = "reviewed"
     STATUS_RESOLVED = "resolved"
 
-    id = Column(Integer, primary_key=True)
+    id = uuid_pk()
     telegram_id = Column(BigInteger, nullable=False)
     role = Column(String(10), default=ROLE_USER, nullable=False)
 
-    city_id = Column(Integer, ForeignKey("cities.id"), nullable=True)
+    city_id = Column(UUID(as_uuid=True), ForeignKey("cities.id"), nullable=True)
     city = relationship("City")
 
     message = Column(Text, nullable=False)

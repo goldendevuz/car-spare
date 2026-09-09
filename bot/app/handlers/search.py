@@ -25,7 +25,7 @@ def format_shop_item(idx: int, r: dict) -> str:
 
 @router.callback_query(SearchStates.city, F.data.startswith("city:"))
 async def search_city_selected(cb: CallbackQuery, state: FSMContext):
-    city_id = int(cb.data.split(":")[1])
+    city_id = cb.data.split(":", 1)[1]
     await state.update_data(city_id=city_id, page=1, query=None)
     set_last_city(cb.from_user.id, city_id)
 
@@ -124,7 +124,7 @@ async def s_noop(cb: CallbackQuery):
 
 @router.callback_query(F.data.startswith("map:"))
 async def show_map(cb: CallbackQuery, api):
-    shop_id = int(cb.data.split(":")[1])
+    shop_id = cb.data.split(":", 1)[1]
     try:
         shop = api.get_shop(shop_id)
     except Exception as e:

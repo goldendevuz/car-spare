@@ -134,7 +134,7 @@ async def open_item(cb: CallbackQuery, state: FSMContext, api):
         await cb.answer("Token topilmadi", show_alert=True)
         return
 
-    part_id = _safe_int(cb.data.split(":")[-1])
+    part_id = cb.data.split(":")[-1]
     if not part_id:
         await cb.answer("Noto‘g‘ri ID", show_alert=True)
         return
@@ -162,7 +162,7 @@ async def open_item(cb: CallbackQuery, state: FSMContext, api):
 # ---------- edit flow ----------
 @router.callback_query(F.data.startswith("prod:edit:"))
 async def edit_item(cb: CallbackQuery, state: FSMContext):
-    part_id = _safe_int(cb.data.split(":")[-1])
+    part_id = cb.data.split(":")[-1]
     if not part_id:
         await cb.answer("Noto‘g‘ri ID", show_alert=True)
         return
@@ -220,7 +220,7 @@ async def delete_item(cb: CallbackQuery, state: FSMContext, api):
         await cb.answer("Token topilmadi", show_alert=True)
         return
 
-    part_id = _safe_int(cb.data.split(":")[-1])
+    part_id = cb.data.split(":")[-1]
     if not part_id:
         await cb.answer("Noto‘g‘ri ID", show_alert=True)
         return
