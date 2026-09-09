@@ -21,6 +21,7 @@ class ShopCreate(BaseModel):
 
 
 class ShopOut(BaseModel):
+    """Faqat do'kon yaratilganda (bir marta) qaytariladi -- seller_token shu yerda oshkor bo'ladi."""
     model_config = ConfigDict(from_attributes=True)
     id: int
     name: str
@@ -31,6 +32,19 @@ class ShopOut(BaseModel):
     landmark: str
     status: str
     seller_token: uuid.UUID
+
+
+class ShopPublicOut(BaseModel):
+    """Public GET javobi -- seller_token bu yerda YO'Q (u faqat egasiga tegishli maxfiy kalit)."""
+    model_config = ConfigDict(from_attributes=True)
+    id: int
+    name: str
+    phone: str
+    city_id: int
+    latitude: float
+    longitude: float
+    landmark: str
+    status: str
 
 
 class PartCreate(BaseModel):

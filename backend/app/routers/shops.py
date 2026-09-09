@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 
 from ..database import get_db
 from ..models import Shop, City
-from ..schemas import ShopCreate, ShopOut
+from ..schemas import ShopCreate, ShopOut, ShopPublicOut
 
 router = APIRouter()
 
@@ -28,7 +28,7 @@ def create_shop(payload: ShopCreate, db: Session = Depends(get_db)):
     return shop
 
 
-@router.get("/shops/{shop_id}/", response_model=ShopOut)
+@router.get("/shops/{shop_id}/", response_model=ShopPublicOut)
 def get_shop(shop_id: int, db: Session = Depends(get_db)):
     shop = db.get(Shop, shop_id)
     if not shop:
