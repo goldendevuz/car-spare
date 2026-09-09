@@ -27,7 +27,15 @@ async def part_start(cb: CallbackQuery, state: FSMContext):
 
 @router.message(SellerPartStates.car_model, F.text)
 async def part_car_model(message: Message, state: FSMContext):
-    await state.update_data(car_model=message.text.strip())
+    car_model = message.text.strip()
+    if len(car_model) < 3:
+        await message.answer(
+            "❌ Model nomi kamida 3 ta belgidan iborat bo‘lishi kerak. Qayta yozing:",
+            reply_markup=cancel_inline_kb("part"),
+        )
+        return
+
+    await state.update_data(car_model=car_model)
     await state.set_state(SellerPartStates.part_name)
     await message.answer(
         "Zapchast nomini yozing (masalan: Old fara):",
@@ -38,6 +46,12 @@ async def part_car_model(message: Message, state: FSMContext):
 @router.message(SellerPartStates.part_name, F.text)
 async def part_name(message: Message, state: FSMContext, api):
     text = message.text.strip()
+    if len(text) < 3:
+        await message.answer(
+            "❌ Zapchast nomi kamida 3 ta belgidan iborat bo‘lishi kerak. Qayta yozing:",
+            reply_markup=cancel_inline_kb("part"),
+        )
+        return
 
     info = get_seller(message.from_user.id)
     if not info:

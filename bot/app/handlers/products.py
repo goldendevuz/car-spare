@@ -189,9 +189,16 @@ async def save_edit(message: Message, state: FSMContext, api):
     part_id = data.get("edit_part_id")
     new_name = message.text.strip()
 
-    if not part_id or not new_name:
+    if not part_id:
         await message.answer("Noto‘g‘ri ma'lumot. Qayta urinib ko‘ring.", reply_markup=shop_menu())
         await state.clear()
+        return
+
+    if len(new_name) < 3:
+        await message.answer(
+            "❌ Nomi kamida 3 ta belgidan iborat bo‘lishi kerak. Qayta yozing:",
+            reply_markup=cancel_inline_kb("part"),
+        )
         return
 
     try:

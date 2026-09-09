@@ -2,7 +2,7 @@ import uuid
 from datetime import datetime
 from typing import Optional, List
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 
 class CityOut(BaseModel):
@@ -35,18 +35,36 @@ class ShopOut(BaseModel):
 
 class PartCreate(BaseModel):
     shop: int
-    car_model: str
-    name: str
+    car_model: str = Field(min_length=3)
+    name: str = Field(min_length=3)
     price: Optional[int] = None
     in_stock: bool = True
+
+    @field_validator("car_model", "name")
+    @classmethod
+    def strip_and_check(cls, v: str) -> str:
+        v = v.strip()
+        if len(v) < 3:
+            raise ValueError("kamida 3 ta belgidan iborat bo'lishi kerak")
+        return v
 
 
 class PartUpdate(BaseModel):
     shop: Optional[int] = None
-    car_model: Optional[str] = None
-    name: Optional[str] = None
+    car_model: Optional[str] = Field(default=None, min_length=3)
+    name: Optional[str] = Field(default=None, min_length=3)
     price: Optional[int] = None
     in_stock: Optional[bool] = None
+
+    @field_validator("car_model", "name")
+    @classmethod
+    def strip_and_check(cls, v: Optional[str]) -> Optional[str]:
+        if v is None:
+            return v
+        v = v.strip()
+        if len(v) < 3:
+            raise ValueError("kamida 3 ta belgidan iborat bo'lishi kerak")
+        return v
 
 
 class PartOut(BaseModel):
