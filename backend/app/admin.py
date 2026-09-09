@@ -1,6 +1,7 @@
 from sqladmin import Admin, ModelView
 from sqladmin.authentication import AuthenticationBackend
 from starlette.requests import Request
+from wtforms import SelectField
 
 from .config import settings
 from .models import City, Shop, Part, SearchLog, SearchResultLog, Feedback
@@ -33,11 +34,14 @@ class ShopAdmin(ModelView, model=Shop):
     column_list = [Shop.id, Shop.name, Shop.phone, Shop.city, Shop.status, Shop.seller_token]
     column_searchable_list = [Shop.name, Shop.phone]
     column_filters = [Shop.status]
-    form_choices = {
-        "status": [
-            (Shop.STATUS_PENDING, "Pending"),
-            (Shop.STATUS_ACTIVE, "Active"),
-        ]
+    form_overrides = {"status": SelectField}
+    form_args = {
+        "status": {
+            "choices": [
+                (Shop.STATUS_PENDING, "Pending"),
+                (Shop.STATUS_ACTIVE, "Active"),
+            ]
+        }
     }
     name_plural = "Shops"
 
@@ -65,16 +69,21 @@ class SearchResultLogAdmin(ModelView, model=SearchResultLog):
 class FeedbackAdmin(ModelView, model=Feedback):
     column_list = [Feedback.id, Feedback.telegram_id, Feedback.role, Feedback.city, Feedback.message, Feedback.status, Feedback.created_at]
     column_filters = [Feedback.status, Feedback.role]
-    form_choices = {
-        "status": [
-            (Feedback.STATUS_NEW, "New"),
-            (Feedback.STATUS_REVIEWED, "Reviewed"),
-            (Feedback.STATUS_RESOLVED, "Resolved"),
-        ],
-        "role": [
-            (Feedback.ROLE_USER, "User"),
-            (Feedback.ROLE_SELLER, "Seller"),
-        ],
+    form_overrides = {"status": SelectField, "role": SelectField}
+    form_args = {
+        "status": {
+            "choices": [
+                (Feedback.STATUS_NEW, "New"),
+                (Feedback.STATUS_REVIEWED, "Reviewed"),
+                (Feedback.STATUS_RESOLVED, "Resolved"),
+            ]
+        },
+        "role": {
+            "choices": [
+                (Feedback.ROLE_USER, "User"),
+                (Feedback.ROLE_SELLER, "Seller"),
+            ]
+        },
     }
     name_plural = "Feedback"
 
