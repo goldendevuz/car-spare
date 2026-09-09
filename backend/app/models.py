@@ -18,6 +18,41 @@ class City(Base):
     is_active = Column(Boolean, default=True, nullable=False)
 
     shops = relationship("Shop", back_populates="city")
+    districts = relationship("District", back_populates="city")
+
+    def __repr__(self):
+        return self.name
+
+
+class District(Base):
+    __tablename__ = "districts"
+
+    id = Column(Integer, primary_key=True)
+    city_id = Column(Integer, ForeignKey("cities.id"), nullable=False)
+    city = relationship("City", back_populates="districts")
+
+    name = Column(String(120), nullable=False)
+    soato_code = Column(String(20), nullable=True)
+
+    settlements = relationship("Settlement", back_populates="district")
+
+    def __repr__(self):
+        return self.name
+
+
+class Settlement(Base):
+    __tablename__ = "settlements"
+
+    TYPE_CITY = "shahar"
+    TYPE_VILLAGE = "qishloq"
+
+    id = Column(Integer, primary_key=True)
+    district_id = Column(Integer, ForeignKey("districts.id"), nullable=False)
+    district = relationship("District", back_populates="settlements")
+
+    name = Column(String(120), nullable=False)
+    type = Column(String(20), default=TYPE_VILLAGE, nullable=False)
+    soato_code = Column(String(20), nullable=True)
 
     def __repr__(self):
         return self.name
