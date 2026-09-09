@@ -44,8 +44,14 @@ async def main():
     dp.include_router(feedback_router)
     dp.include_router(inline_search_router)
 
-    dp.startup.register(lambda **_: notify_admins(bot, "✅ Bot ishga tushdi."))
-    dp.shutdown.register(lambda **_: notify_admins(bot, "⛔ Bot to'xtadi."))
+    async def on_startup(**_):
+        await notify_admins(bot, "✅ Bot ishga tushdi.")
+
+    async def on_shutdown(**_):
+        await notify_admins(bot, "⛔ Bot to'xtadi.")
+
+    dp.startup.register(on_startup)
+    dp.shutdown.register(on_shutdown)
 
     await dp.start_polling(bot)
 
